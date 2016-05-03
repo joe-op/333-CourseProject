@@ -1,28 +1,47 @@
-/* Determine the value of stocks in a specific location
- * Input: headquarter_id
- */
-select close from company, stock_report
-       where company.company_id = stock_report.company_id
-       group by stock_report.company_id;;;;
-       /* TODO get max date */
-
-/* Determine the value of stocks in a specific field
- * Input: field
- */
- select close from company, stock_report, company_field
- 	where company.company_id = stock_report.company_id
-	and   company_field.field_id = company.field_id
-	group by stock_report.company_id;
-	/* TODO get max date */
+/* delete queries for too big stock report tables */
+/* Input: company_id */
+delete from stock_report
+			 where company_id = $company_id
+			 and stock_id > 499 +
+			 		 (select min(stock_id) as min_stock_id from
+								(select stock_id from stock_report as x
+								 where company_id = $company_id) as y;
 
 
 
 
-/* Determine the stock history of a company (with an agent)
- * Input: company_id, agent_id
- */
- select open, close from company, stock_report
- 	where; /* date in max, min for that company */
+/* Determine the value of stocks in a specific location */
+select date, close, company.headquarter_id, a.stock_id
+			 from stock_report as a, company, headquarter
+			 where company.company_id = a.company_id
+			 and headquarter.headquarter_id = company.headquarter_id
+			 and date in(
+			 		 select max(date) from stock_report as b
+					 where a.company_id = b.company_id);
+			 
+/* Find the value of stocks in a specific field */
+select date, close, field_name, a.stock_id				
+			 from stock_report as a, company as x, company_field
+			 where x.company_id = a.company_id	
+			 and company_field.field_id = x.company_field_id
+			 and close in(
+			 		 select max(close) from stock_report as b, company as y
+					 where b.company_id = y.company_id
+					 and a.stock_id = b.stock_id
+					 and y.company_field_id = x.company_field_id)
+			 and date in(
+			 		 select max(date) from stock_report as c
+					 where a.company_id = c.company_id);
+
+/* Find first stock value for a company */
+select date, close, company_id, a.stock_id
+			 from stock_report as a
+			 where date = (
+			 			 select min(date)
+						 from stock_report as b
+						 where a.company_id = b.company_id);
+
+
 
 /* Find the history of a company's stocks
  * Input: company_id
