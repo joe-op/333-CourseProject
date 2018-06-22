@@ -1,5 +1,13 @@
 require 'faker'
 
+### agent
+### 
+### agents_id INT
+### agent_phone VARCHAR(45)
+### agent_email VARCHAR(45)
+### agent_address VARCHAR(45)
+
+
 class AgentBot
 
   TABLE = "agent"
