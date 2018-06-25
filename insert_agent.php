@@ -64,7 +64,7 @@ if(isset($_POST['submit']))
 
 <?php
 
-if($result = mysqli_query($link, "SELECT agent_id, agent_email, agent_phone, agent_address, agent_first_name, agent_last_name FROM AGENT"))
+if($result = mysqli_query($link, "SELECT agent_id, agent_email, agent_phone, agent_address, agent_first_name, agent_last_name FROM agent"))
 {
 	while($row = mysqli_fetch_assoc($result))
 	{
